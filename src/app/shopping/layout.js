@@ -21,6 +21,7 @@ export default function ShoppingLayout({ children }) {
         <Link href='/shopping/home-appliances'> Home Appliances </Link>
         <Link href='/shopping/beauty-products'> Beauty Products </Link>
         <Link href='/shopping/outdoor-gear'> Outdoor Gear </Link>
+        <Link href='/shopping/clothes'> Clothes </Link>
         <div className={styles.buttonContainer}>
           <button onClick={goBack} className={styles.button}>
             Back to Previous Page
