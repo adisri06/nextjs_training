@@ -1,5 +1,7 @@
 // src/app/api/signup/route.js
 import { query } from "../../../../lib/db";
+import bcrypt from "bcryptjs"; // Import bcryptjs
+
 
 // Handle POST requests
 export async function POST(req) {
@@ -16,7 +18,8 @@ export async function POST(req) {
         },
       });
     } else {
-      const newUser = await query('INSERT INTO users (username, email, password, mobile) VALUES ($1, $2, $3, $4) RETURNING *', [username, email, password, mobile]);
+      const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds = 10
+      const newUser = await query('INSERT INTO users (username, email, password, mobile) VALUES ($1, $2, $3, $4) RETURNING *', [username, email, hashedPassword, mobile]);
       return new Response(JSON.stringify({ success: true, message: 'User registered successfully!' }), {
         status: 201,
         headers: {

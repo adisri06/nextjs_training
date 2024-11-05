@@ -10,7 +10,7 @@ export default function Home() {
   
 
   return (
-    <div>
+      <div style={{ padding: '20px', textAlign: 'center' }}>
       <h1>Welcome to our stores</h1>
       <Link href="/shopping">Go to Shopping</Link>
     </div>

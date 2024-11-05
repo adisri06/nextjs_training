@@ -1,14 +1,19 @@
 'use client'
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
+import styles from '../css/signupform.module.css'
+
 export default function Signup() {
+  const router = useRouter();
     const [formData, setFormData] = useState({
         username: '',
         password: '',
         email: '',
         mobile: '',    
     });
+    const [showLogin, setShowLogin] = useState(false); 
     const [message, setMessage] = useState('');
-    const handleformChange = (event) => {
+    const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData((prevFormData) => ({
           ...prevFormData,
@@ -24,62 +29,77 @@ export default function Signup() {
                 },
                 body: JSON.stringify(formData),
               });          
-            const data = await response.json();
-            if (data.success) {
-              setMessage('User added successfully');
-            } else {
-              setMessage(data.message);
-            }
+              const result = await response.json();
+
+              if (result.success) {
+                  alert(result.message);
+                  router.push('/login'); // Redirect to login after successful signup
+              } else {
+                  if (result.message === 'User already exists, please log in.') {
+                      setShowLogin(true); // Show login button if user already exists
+                  } else {
+                      alert(result.message); // Show error message
+                  }
+              }
     };
 
 
     return (
-        <div style={{ maxWidth: '400px', margin: '0 auto', padding: '1rem' }}>
-          <h2>Sign Up</h2>
+      <div className={styles.formContainer}>
+          <h1 className={styles.formTitle}>Sign Up</h1>
           <form onSubmit={handleSubmit}>
-            <div>
-              <label>Username</label>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleformChange}
-                required
-              />
-            </div>
-            <div>
-              <label>Password</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleformChange}
-                required
-              />
-            </div>
-            <div>
-              <label>Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleformChange}
-                required
-              />
-            </div>
-            <div>
-              <label>Mobile</label>
-              <input
-                type="text"
-                name="mobile"
-                value={formData.mobile}
-                onChange={handleformChange}
-                required
-              />
-            </div>
-            <button type="submit">Sign Up</button>
+              <div className={styles.formGroup}>
+                  <label htmlFor="username">Username</label>
+                  <input
+                      type="text"
+                      name="username"
+                      id="username"
+                      value={formData.username}
+                      onChange={handleChange}
+                      required
+                  />
+              </div>
+              <div className={styles.formGroup}>
+                  <label htmlFor="password">Password</label>
+                  <input
+                      type="password"
+                      name="password"
+                      id="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                  />
+              </div>
+              <div className={styles.formGroup}>
+                  <label htmlFor="email">Email</label>
+                  <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                  />
+              </div>
+              <div className={styles.formGroup}>
+                  <label htmlFor="mobile">Mobile</label>
+                  <input
+                      type="text"
+                      name="mobile"
+                      id="mobile"
+                      value={formData.mobile}
+                      onChange={handleChange}
+                      required
+                  />
+              </div>
+              <button type="submit" className={styles.submitButton}>Sign Up</button>
           </form>
-          {message && <p>{message}</p>}
-        </div>
-      );
-    }
+          {/* {message && <p>{message}</p>} */}
+          {showLogin && (
+                <div className={styles.loginPrompt}>
+                    <p>User already exists. Would you like to <span className={styles.loginLink} onClick={() => router.push('/login')}>Log In</span> instead?</p>
+                </div>
+            )}
+      </div>
+  );
+}
